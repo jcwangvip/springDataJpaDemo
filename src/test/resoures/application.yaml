@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    validation-query: SELECT 1
+    validation-query-timeout: 5000
+    test-on-borrow: true
+    test-on-connect: true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root123
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update

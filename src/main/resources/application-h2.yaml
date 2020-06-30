@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+#spring.h2.console:
+#  enabled: true # Whether to enable the console.
+#  settings:
+#    web-allow-others: true # Whether to enable remote access.
+#    trace: false
