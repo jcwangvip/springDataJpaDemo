@@ -1,7 +1,7 @@
-package com.jcwang.spring.springdata.demo.domin;
+package com.jcwang.spring.springdata.demo.domin.repository;
 
-import com.jcwang.spring.springdata.demo.domin.repository.DeptRepository;
-import com.jcwang.spring.springdata.demo.domin.repository.UserRepository;
+import com.jcwang.spring.springdata.demo.domin.Dept;
+import com.jcwang.spring.springdata.demo.domin.User;
 import com.jcwang.spring.springdata.exception.DaoException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,11 +11,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,39 +39,57 @@ class DeptRepositoryTest {
     @Autowired
     private DeptRepository deptRepository;
 
-    private Dept dept;
+    String deptCode = "service";
 
     @BeforeEach
     void setUp() {
-        List<User> users = new ArrayList<>();
-        User user = new User(1L, "zhangsan", "张三");
-        User user1 = new User(2L, "lisi", "李四");
-        users.add(user);
-        users.add(user1);
-        dept = new Dept(1L, "service", "服务部门", users);
+        saveDept();
     }
 
+    @Transactional(rollbackOn = Exception.class)
+    void saveDept() {
+        List<User> saveUsers = new ArrayList<>();
+        User user = new User(1L, "zhangsan", "张三");
+        User user1 = new User(2L, "lisi", "李四");
+        saveUsers.add(user);
+        saveUsers.add(user1);
+        Dept saveDept = new Dept(1L, deptCode, "服务部门", saveUsers);
+        Optional<Dept> deptOptional = deptRepository.findByCode(deptCode);
+        if (!deptOptional.isPresent()) {
+            deptRepository.save(saveDept);
+            return;
+        }
+        Dept dept = deptOptional.get();
+        List<User> findUsers = dept.getUsers();
+        List<User> existUsers = saveUsers.stream()
+                .filter(saveUser -> findUsers.stream()
+                        .anyMatch(findUser -> findUser.getId().compareTo(saveUser.getId()) == 0))
+                .collect(Collectors.toList());
+        saveUsers.removeAll(existUsers);
+        if (CollectionUtils.isEmpty(saveUsers)) {
+            log.info("没有需要保存的用户");
+        }
+        findUsers.addAll(saveUsers);
+        deptRepository.save(dept);
+    }
 
     @Test
     void deleteDept() {
-//        saveUser();
-        User user = userRepository.findById(1L).orElseThrow(new DaoException("查询用户失败"));
-        user.setDeleteDept();
-        userRepository.delete(user);
-        Optional<User> deleteUserFind = userRepository.findById(1L);
-        assertFalse(deleteUserFind.isPresent());
-        Optional<Dept> deleteDeptFind = deptRepository.findById(1L);
+        Dept dept = deptRepository.findByCode(deptCode).orElseThrow(new DaoException("查询部门信息失败"));
+        deptRepository.delete(dept);
+        List<User> users = userRepository.findByJoinDeptCode(deptCode);
+        assertTrue(CollectionUtils.isEmpty(users));
+        Optional<Dept> deleteDeptFind = deptRepository.findByCode(deptCode);
         assertFalse(deleteDeptFind.isPresent());
     }
 
     @Transactional(rollbackOn = Exception.class)
     @Test
     void deleteUser() {
-        Dept dept = deptRepository.findById(1L).orElseThrow(new DaoException("查询部门信息失败"));
+        Dept dept = deptRepository.findByCode(deptCode).orElseThrow(new DaoException("查询部门信息失败"));
         List<User> users = dept.getUsers();
         users.stream()
                 .filter(user -> user.getUserCode().equals("zhangsan"))
-//                .filter(user -> user.getUserCode().equals("lisi"))
                 .findAny().ifPresent(users::remove);
         deptRepository.save(dept);
     }
@@ -77,7 +97,7 @@ class DeptRepositoryTest {
     @Transactional(rollbackOn = Exception.class)
     @Test
     void updateUser() {
-        Dept dept = deptRepository.findById(1L).orElseThrow(new DaoException("查询部门信息失败"));
+        Dept dept = deptRepository.findByCode(deptCode).orElseThrow(new DaoException("查询部门信息失败"));
         String name = "update";
         dept.setName(name);
         dept.getUsers().stream()
@@ -106,21 +126,9 @@ class DeptRepositoryTest {
 
     @Transactional(rollbackOn = {Exception.class, Throwable.class})
     @Test
-    void findAllDept() {
-        List<Dept> deptList = deptRepository.findAll();
-        log.info("查询说的的部门信息{}", deptList.toString());
-    }
-
-    @Transactional(rollbackOn = {Exception.class, Throwable.class})
-    @Test
-    void saveDept() {
-        /*List<User> users = new ArrayList<>();
-        User user = new User(1L, "zhangsan", "张三");
-        User lisiUser = new User(2L, "lisi", "李四");
-        users.add(user);
-        users.add(lisiUser);
-        Dept dept = new Dept(1L, "service", "服务部门", users);*/
-        deptRepository.save(dept);
+    void findDept() {
+        Optional<Dept> deptOptional = deptRepository.findByCode(deptCode);
+        assertTrue(deptOptional.isPresent());
     }
 
 

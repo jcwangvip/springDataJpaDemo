@@ -25,7 +25,7 @@ public class User {
     private Long version;
 
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 //    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "joinDeptCode", referencedColumnName = "code", insertable = false, updatable = false)
 //    @JoinColumn(name = "joinDeptCode1", referencedColumnName = "code")
