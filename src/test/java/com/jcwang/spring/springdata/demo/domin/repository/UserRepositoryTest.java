@@ -1,5 +1,6 @@
 package com.jcwang.spring.springdata.demo.domin.repository;
 
+import com.jcwang.spring.springdata.demo.domin.Role;
 import com.jcwang.spring.springdata.demo.domin.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,6 +85,8 @@ class UserRepositoryTest {
 
     @Transactional(rollbackOn = {Exception.class})
     void saveUser() {
+        Role role = new Role(1L, "admin", "admin");
+
         List<User> saveUsers = new ArrayList<>();
         User person = new User(1L, "wangwu", "王五");
         User person1 = new User(2L, "zhaosi", "赵四");
@@ -102,8 +105,6 @@ class UserRepositoryTest {
             log.info("没有需要保存的用户");
         }
         userRepository.saveAll(users);
-//        Role role = new Role(1L, "admin", "admin");
-
     }
 
 }

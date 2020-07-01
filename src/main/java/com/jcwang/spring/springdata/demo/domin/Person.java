@@ -27,8 +27,7 @@ public class Person {
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
 //    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "joinDeptCode", referencedColumnName = "code", insertable = false, updatable = false)
-//    @JoinColumn(name = "joinDeptCode1", referencedColumnName = "code")
+    @JoinColumn(name = "joinDeptCode", referencedColumnName = "code", insertable = false, updatable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Dept dept;
 
     public void setDept(Dept dept) {

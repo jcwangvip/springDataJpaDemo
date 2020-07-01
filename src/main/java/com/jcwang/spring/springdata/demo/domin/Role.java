@@ -3,6 +3,9 @@ package com.jcwang.spring.springdata.demo.domin;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.List;
+
 
 /**
  * 类描述
@@ -12,22 +15,21 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-//@Entity
-//@Table
+@Entity
+@Table
 public class Role {
 
 
-//    @Id
+    @Id
     private Long id;
     private String roleCode;
     private String roleName;
-    private String joinUserCode;
-//    @Version
+    @Version
     private Long version;
 
-//    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "roleCode", referencedColumnName = "joinRoleCode", insertable = false, updatable = false)
-//    private List<User> users;
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "roleCode", referencedColumnName = "joinRoleCode")
+    private List<User> users;
 
     public Role(Long id, String roleCode, String roleName) {
         this.id = id;

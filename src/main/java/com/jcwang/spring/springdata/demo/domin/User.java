@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * 类描述
@@ -21,13 +22,13 @@ public class User {
     private Long id;
     private String userCode;
     private String userName;
-    private String joinRoleCode;
+//    private String joinRoleCode;
     @Version
     private Long version;
 
-//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "joinRoleCode", referencedColumnName = "roleCode", insertable = false, updatable = false)
-//    private List<Role> roles;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "joinRoleCode", referencedColumnName = "roleCode")
+    private List<Role> roles;
 
 
     public User() {

@@ -5,9 +5,9 @@ spring:
     test-on-borrow: true
     test-on-connect: true
     driver-class-name: com.mysql.jdbc.Driver
-    username: smes
-    password: smes_PassW0rd
-    url: jdbc:mysql://127.0.0.1:3306/smes?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: root123
+    url: jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull
   data:
     jpa:
       repositories:
