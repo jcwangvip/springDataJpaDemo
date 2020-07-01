@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table
-public class User {
+public class Person {
 
     @Id
     private Long id;
@@ -36,10 +36,10 @@ public class User {
         this.dept = dept;
     }
 
-    public User() {
+    public Person() {
     }
 
-    public User(Long id, String userCode, String userName, Dept dept) {
+    public Person(Long id, String userCode, String userName, Dept dept) {
         this.id = id;
         this.userCode = userCode;
         this.userName = userName;
@@ -47,7 +47,7 @@ public class User {
         this.joinDeptCode = dept.getCode();
     }
 
-    public User(Long id, String userCode, String userName) {
+    public Person(Long id, String userCode, String userName) {
         this.id = id;
         this.userCode = userCode;
         this.userName = userName;
@@ -56,7 +56,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "Person{" +
                 "id=" + id +
                 ", userCode='" + userCode + '\'' +
                 ", userName='" + userName + '\'' +

@@ -39,7 +39,7 @@ public class Dept implements Serializable {
 //    @JoinColumn(name = "joinDeptCode")
     @JoinColumn(name = "joinDeptCode", referencedColumnName = "code")
 //    @JoinColumn(name = "joinDeptCode", referencedColumnName = "code", insertable = false, updatable = false)
-    private List<User> users;
+    private List<Person> person;
 
 
     public Dept() {
@@ -51,11 +51,11 @@ public class Dept implements Serializable {
         this.name = name;
     }
 
-    public Dept(Long id, String code, String name, List<User> users) {
+    public Dept(Long id, String code, String name, List<Person> people) {
         this.id = id;
         this.code = code;
         this.name = name;
-        users.forEach(user -> user.setJoinDeptCode(code));
-        this.users = users;
+        people.forEach(person -> person.setJoinDeptCode(code));
+        this.person = people;
     }
 }
