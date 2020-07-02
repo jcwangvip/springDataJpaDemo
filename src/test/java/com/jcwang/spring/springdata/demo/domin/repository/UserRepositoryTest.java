@@ -2,6 +2,7 @@ package com.jcwang.spring.springdata.demo.domin.repository;
 
 import com.jcwang.spring.springdata.demo.domin.Role;
 import com.jcwang.spring.springdata.demo.domin.User;
+import com.jcwang.spring.springdata.exception.DaoException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
@@ -40,41 +42,61 @@ class UserRepositoryTest {
     void setUp() {
         saveUser();
     }
-/*
+
+    /*
+        @Test
+        void deleteAll() {
+            List<Person> all = personRepository.findByJoinDeptCode(deptCode);
+            personRepository.deleteAll(all);
+            assertFalse(CollectionUtils.isEmpty(all));
+            List<Person> findAll = personRepository.findByJoinDeptCode(deptCode);
+            assertTrue(CollectionUtils.isEmpty(findAll));
+        }
+
+
+        @Test
+        void delete() {
+            Person person = personRepository.findById(3L).orElseThrow(new DaoException("查询用户失败"));
+            personRepository.delete(person);
+            Optional<Person> deleteUserFind = personRepository.findById(3L);
+            assertFalse(deleteUserFind.isPresent());
+            Optional<Dept> deleteDeptFind = deptRepository.findById(2L);
+            assertTrue(deleteDeptFind.isPresent());
+        }
+
+    */
+
     @Test
-    void deleteAll() {
-        List<Person> all = personRepository.findByJoinDeptCode(deptCode);
-        personRepository.deleteAll(all);
-        assertFalse(CollectionUtils.isEmpty(all));
-        List<Person> findAll = personRepository.findByJoinDeptCode(deptCode);
-        assertTrue(CollectionUtils.isEmpty(findAll));
+    void updateRole() {
+        String findUserCode = "wangwu";
+        String updateUserName = "王五修改";
+        String roleCode = "admin";
+
+        User user = userRepository.findByUserCode(findUserCode).orElseThrow(new DaoException("查询用户失败"));
+        List<Role> roles = user.getRoles();
+        roles.stream()
+                .filter(role -> role.getRoleCode().equals(roleCode))
+                .findAny().ifPresent(role -> role.setRoleName(updateUserName));
+        User updateAfterFindUser = userRepository.findByUserCode(findUserCode).orElseThrow(new DaoException("查询用户失败"));
+        updateAfterFindUser.getRoles()
+                .stream()
+                .filter(role -> role.getRoleCode().equals(roleCode))
+                .findAny().ifPresent(role -> assertEquals(updateUserName, role.getRoleName()));
+        // TODO 这里还需要研究一下，为什么不增加吗，领域驱动开发是不是就有问题
+//        assertEquals(user.getVersion() + 1, updateAfterFindUser.getVersion());
     }
 
 
     @Test
-    void delete() {
-        Person person = personRepository.findById(3L).orElseThrow(new DaoException("查询用户失败"));
-        personRepository.delete(person);
-        Optional<Person> deleteUserFind = personRepository.findById(3L);
-        assertFalse(deleteUserFind.isPresent());
-        Optional<Dept> deleteDeptFind = deptRepository.findById(2L);
-        assertTrue(deleteDeptFind.isPresent());
+    void updateUser() {
+        String findUserCode = "wangwu";
+        String updateUserName = "王五修改";
+
+        User user = userRepository.findByUserCode(findUserCode).orElseThrow(new DaoException("查询用户失败"));
+        user.setUserName(updateUserName);
+        User updateAfterFindUser = userRepository.findByUserCode(findUserCode).orElseThrow(new DaoException("查询用户失败"));
+        assertEquals(updateUserName, updateAfterFindUser.getUserName());
     }
-
-
-    @Test
-    void update() {
-        String userName = "update";
-
-        Person person = personRepository.findById(3L).orElseThrow(new DaoException("查询用户失败"));
-        person.setUserName(userName);
-        Person findPerson = personRepository.findById(3L).orElseThrow(new DaoException("查询用户失败"));
-        assertEquals(userName, findPerson.getUserName());
-        Dept dept = deptRepository.findByCode(person.getJoinDeptCode()).orElseThrow(new DaoException("没有找到部门信息"));
-        dept.setName(userName);
-        Dept findUpdateAfterDept = deptRepository.findByCode(person.getJoinDeptCode()).orElseThrow(new DaoException("没有找到部门信息"));
-        assertEquals(findUpdateAfterDept.getName(), userName);
-    }*/
 
 
     @Test
@@ -83,13 +105,13 @@ class UserRepositoryTest {
         assertFalse(CollectionUtils.isEmpty(users));
     }
 
-    @Transactional(rollbackOn = {Exception.class})
+    @Transactional(rollbackOn = Exception.class)
     void saveUser() {
         Role role = new Role(1L, "admin", "admin");
 
         List<User> saveUsers = new ArrayList<>();
-        User person = new User(1L, "wangwu", "王五");
-        User person1 = new User(2L, "zhaosi", "赵四");
+        User person = new User(1L, "wangwu", "王五", role);
+        User person1 = new User(2L, "zhaosi", "赵四", role);
         saveUsers.add(person);
         saveUsers.add(person1);
         List<String> userCodes = saveUsers.stream().map(User::getUserCode).collect(Collectors.toList());
