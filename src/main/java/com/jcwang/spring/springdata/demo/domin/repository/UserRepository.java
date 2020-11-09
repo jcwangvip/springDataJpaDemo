@@ -1,6 +1,5 @@
 package com.jcwang.spring.springdata.demo.domin.repository;
 
-import com.jcwang.spring.springdata.demo.domin.Person;
 import com.jcwang.spring.springdata.demo.domin.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

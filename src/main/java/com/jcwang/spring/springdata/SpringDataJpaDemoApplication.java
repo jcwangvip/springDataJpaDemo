@@ -2,13 +2,17 @@ package com.jcwang.spring.springdata;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
+/**
+ * 启动类
+ *
+ * @author jiancheng
+ */
 @SpringBootApplication
-public class DemoApplication {
+public class SpringDataJpaDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(SpringDataJpaDemoApplication.class, args);
     }
 
 }
